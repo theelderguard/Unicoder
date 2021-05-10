@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 #pragma once
 
 #include <locale>
-#include <codecvt>
+#include <cwchar>
 
 using std::use_facet;
 using std::locale;
@@ -22,25 +22,24 @@ using std::char_traits;
 namespace Unicoder
 {
   template<typename HighSource , typename HighDestination , typename LowSource , typename LowDestination>
-  HighDestination & ProcessObject ( const HighSource & _value )
+  HighDestination ProcessObject ( const HighSource & _value )
   {
     const codecvt<LowSource , LowDestination , mbstate_t> & converter = use_facet<codecvt<LowSource , LowDestination , mbstate_t>> ( locale ( ) );
 
     HighDestination buffer = HighDestination ( _value.length ( ) , static_cast< LowDestination >( 0 ) );
 
+    mbstate_t state = mbstate_t ( );
     const LowSource * from;
     LowDestination * to;
 
-    converter.out ( mbstate_t ( ) , &_value [ 0 ] , &_value [ _value.length ( ) ] , from ,
-                    &buffer [ 0 ] , &buffer [ buffer.length ( ) ] , to );
-
-    buffer.resize ( to - &buffer [ 0 ] );
+    converter.out ( state , &_value [ 0 ] , &_value [ _value.length ( ) - 1 ] , from ,
+                    &buffer [ 0 ] , &buffer [ _value.length ( ) - 1 ] , to );
 
     return buffer;
   }
 
   template<typename Source , typename Destination>
-  Destination *& ProcessPointer ( const Source * _value )
+  Destination * ProcessPointer ( const Source * _value )
   {
     const codecvt<Source , Destination , mbstate_t> & converter = use_facet<codecvt<Source , Destination , mbstate_t>> ( locale ( ) );
 
@@ -55,9 +54,9 @@ namespace Unicoder
 
     const Source * from;
     Destination * to;
+    mbstate_t state = mbstate_t ( );
 
-    converter.out ( mbstate_t ( ) , &_value [ 0 ] , &_value [ length ] , from ,
-                    &buffer [ 0 ] , &buffer [ length ] , to );
+    converter.out ( state , &_value [ 0 ] , &_value [ length - 1 ] , from , &buffer [ 0 ] , &buffer [ length - 1 ] , to );
 
     return buffer;
   }
