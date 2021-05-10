@@ -21,7 +21,7 @@ using std::char_traits;
 
 namespace Unicoder
 {
-  template<typename HighSource , typename HighDestination, typename LowSource , typename LowDestination>
+  template<typename HighSource , typename HighDestination , typename LowSource , typename LowDestination>
   HighDestination & ProcessObject ( const HighSource & _value )
   {
     const codecvt<LowSource , LowDestination , mbstate_t> & converter = use_facet<codecvt<LowSource , LowDestination , mbstate_t>> ( locale ( ) );
