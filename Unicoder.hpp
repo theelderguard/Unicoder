@@ -53,8 +53,8 @@ namespace Unicoder
       buffer [ c ] = static_cast< Destination >( 0 );
     }
 
-    const SourceChar * from;
-    DestinationChar * to;
+    const Source * from;
+    Destination * to;
 
     converter.out ( mbstate_t ( ) , &_value [ 0 ] , &_value [ length ] , from ,
                     &buffer [ 0 ] , &buffer [ length ] , to );
